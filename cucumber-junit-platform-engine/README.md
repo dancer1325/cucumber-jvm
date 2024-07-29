@@ -1,39 +1,42 @@
 Cucumber JUnit Platform Engine
 ==============================
 
-Use the JUnit (5) Platform to execute Cucumber scenarios.
+* allows, about Cucumber scenarios -- via -- JUnit (5) Platform
+  * discovering
+  * selecting
+  * executing  
+* Maven
+  * add | "pom.xml"
 
-Add the `cucumber-junit-platform-engine` dependency to your `pom.xml`:
-
-```xml
-<dependency>
-   <groupId>io.cucumber</groupId>
-   <artifactId>cucumber-junit-platform-engine</artifactId>
-   <version>${cucumber.version}</version>
-   <scope>test</scope>
-</dependency>
-```
-
-This will allow IntelliJ IDEA, Eclipse, Maven, Gradle, etc, to discover, select
-and execute Cucumber scenarios.
+    ```xml
+    <dependency>
+       <groupId>io.cucumber</groupId>
+       <artifactId>cucumber-junit-platform-engine</artifactId>
+       <version>${cucumber.version}</version>
+       <scope>test</scope>
+    </dependency>
+    ```
 
 ## Surefire and Gradle workarounds
 
-Maven, Surefire and Gradle do not yet support discovery of non-class based tests
-(see: [gradle/#4773](https://github.com/gradle/gradle/issues/4773),
-[SUREFIRE-1724](https://issues.apache.org/jira/browse/SUREFIRE-1724)). As a
- workaround, you can either use:
- * the [JUnit Platform Suite Engine](https://junit.org/junit5/docs/current/user-guide/#junit-platform-suite-engine);
- * the [JUnit Platform Console Launcher](https://junit.org/junit5/docs/current/user-guide/#running-tests-console-launcher) or;
- * the [Gradle Cucumber-Companion](https://github.com/gradle/cucumber-companion) plugins for Gradle and Maven.
- * the [Cucable](https://github.com/trivago/cucable-plugin) plugin for Maven.
+* discovery of non-class based tests, NOT yet supported | Maven, Surefire and Gradle
+  * gradle
+    * [gradle/#4773](https://github.com/gradle/gradle/issues/4773)
+  * surefire
+    * [SUREFIRE-1724](https://issues.apache.org/jira/browse/SUREFIRE-1724))
+  * workarounds
+    * [JUnit Platform Suite Engine](https://junit.org/junit5/docs/current/user-guide/#junit-platform-suite-engine)
+    * [JUnit Platform Console Launcher](https://junit.org/junit5/docs/current/user-guide/#running-tests-console-launcher)
+    * [Gradle Cucumber-Companion](https://github.com/gradle/cucumber-companion) -- plugins for -- Gradle and Maven
+    * [Cucable](https://github.com/trivago/cucable-plugin) plugin -- for -- Maven
 
-### Use the JUnit Platform Suite Engine
+### Workaround -- via -- JUnit Platform Suite Engine
 
-The JUnit Platform Suite Engine can be used to run Cucumber. See
-[Suites with different configurations](#suites-with-different-configurations)
-for a brief how to.
+* JUnit Platform Suite Engine
+  * allows
+    * running Cucumber -- Check [Suites with different configurations](#suites-with-different-configurations) -- 
 
+* TODO:
 Because Surefire and Gradle reports provide the results in a `<Class Name> - <Method Name>`
 format, only scenario names or example numbers are reported. This
 can make for hard to read reports. To improve the readability of the reports
@@ -166,21 +169,21 @@ TODO: (I don't know how. Feel free to send a pull request. ;))
 
 ## Suites with different configurations
 
-The JUnit Platform Suite Engine can be used to run Cucumber multiple times with
-different configurations. Add the `junit-platform-suite` dependency:
+* == run Cucumber multiple times / different configurations
+* steps
+  * add
 
-```xml
-<dependency>
-   <groupId>org.junit.platform</groupId>
-   <artifactId>junit-platform-suite</artifactId>
-   <version>${junit-platform.version}</version>
-   <scope>test</scope>
-</dependency>
-```
+      ```xml
+      <dependency>
+         <groupId>org.junit.platform</groupId>
+         <artifactId>junit-platform-suite</artifactId>
+         <version>${junit-platform.version}</version>
+         <scope>test</scope>
+      </dependency>
+      ```
 
-Then define suites as needed using the annotation from the
-[`org.junit.platform.suite.api`](https://junit.org/junit5/docs/current/api/org.junit.platform.suite.api/org/junit/platform/suite/api/package-summary.html)
-package:
+  * define suites / -- use the annotation from -- [`org.junit.platform.suite.api`](https://junit.org/junit5/docs/current/api/org.junit.platform.suite.api/org/junit/platform/suite/api/package-summary.html)
+
 
 ```java
 package com.example;
