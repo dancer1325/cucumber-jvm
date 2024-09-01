@@ -201,39 +201,36 @@ public class RunCucumberTest {
 }
 ```
 
-## Parallel execution ## 
+## Parallel execution 
 
-By default, Cucumber runs tests sequentially in a single thread. Running tests
-in parallel is available as an opt-in feature. To enable parallel execution, set
-the `cucumber.execution.parallel.enabled` configuration parameter to `true`,
-e.g., in `junit-platform.properties`.
+* By default, Cucumber runs tests sequentially | 1! thread
+* Running tests in parallel
+  * set `cucumber.execution.parallel.enabled=true` 
+    * [ways in Junit5](https://junit.org/junit5/docs/current/user-guide/#running-tests-config-params)
+  -- _Example:_ | `junit-platform.properties` --
+  * Cucumber supports JUnit 5s `ParallelExecutionConfigurationStrategy`
+    * allows controlling
+      * desired parallelism
+      * maximum parallelism
+    * Cucumber built-in implementations
+      * `dynamic`
+        * `cucumber.execution.parallel.config.strategy=dynamic`
+        * desired parallelism = `availableCores` * `cucumber.execution.parallel.config.dynamic.factor`
+        * 👁️ default one / `cucumber.execution.parallel.config.dynamic.factor=1` 👁️
+      * `fixed`
+        * `cucumber.execution.parallel.config.strategy=fixed`
+        * `cucumber.execution.parallel.config.fixed.parallelism=desiredParallelism`
+        * `cucumber.execution.parallel.config.fixed.max-pool-size=forkJoinPool'sMaximumPoolSize` 
+      * `custom`
+        * `cucumber.execution.parallel.config.strategy=custom`
+        * specify -- via -- `cucumber.execution.parallel.config.custom.class`
+  * if `.fixed.max-pool-size` limits the maximum#OfConcurrentThreads -> Cucumber does NOT guarantee that the #OfConcurrentlyExecutingScenarios < `.fixed.max-pool-size`
+    * [junit5/#3108](https://github.com/junit-team/junit5/issues/3108)
 
-To control properties such as the desired parallelism and maximum parallelism,
-Cucumber supports JUnit 5s `ParallelExecutionConfigurationStrategy`. Cucumber
-provides two implementations: `dynamic` and `fixed` that can be set through
-`cucumber.execution.parallel.config.strategy`. You may also implement a `custom`
-strategy.
-
-* `dynamic`: Computes the desired parallelism as `<available cores>` * 
-`cucumber.execution.parallel.config.dynamic.factor`.
-
-* `fixed`: Set `cucumber.execution.parallel.config.fixed.parallelism` to the
-  desired parallelism and `cucumber.execution.parallel.config.fixed.max-pool-size`
-  to the maximum pool size of the underlying ForkJoin pool.
-
-* `custom`: Specify a custom `ParallelExecutionConfigurationStrategy`
-implementation through `cucumber.execution.parallel.config.custom.class`.  
-
-If no strategy is specified Cucumber will use the `dynamic` strategy with a
-factor of `1`.
-
-Note: While `.fixed.max-pool-size` effectively limits the maximum number of
-concurrent threads, Cucumber does not guarantee that the number of concurrently
-executing scenarios will not exceed this. See [junit5/#3108](https://github.com/junit-team/junit5/issues/3108)
-for details.
 
 ### Exclusive Resources ###
 
+* TODO
 To avoid flaky tests when multiple scenarios manipulate the same resource, tests
 can be [synchronized][junit5-user-guide-synchronization] on that resource.
 
