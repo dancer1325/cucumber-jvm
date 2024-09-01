@@ -227,57 +227,46 @@ public class RunCucumberTest {
   * if `.fixed.max-pool-size` limits the maximum#OfConcurrentThreads -> Cucumber does NOT guarantee that the #OfConcurrentlyExecutingScenarios < `.fixed.max-pool-size`
     * [junit5/#3108](https://github.com/junit-team/junit5/issues/3108)
 
-
 ### Exclusive Resources ###
 
-* TODO
-To avoid flaky tests when multiple scenarios manipulate the same resource, tests
-can be [synchronized][junit5-user-guide-synchronization] on that resource.
+* 👁️ if you want to avoid flaky tests | multiple scenarios / manipulate SAME resource -> [synchronize the tests][junit5-user-guide-synchronization] 👁️
 
-[junit5-user-guide-synchronization]: https://junit.org/junit5/docs/current/user-guide/#writing-tests-parallel-execution-synchronization
+    [junit5-user-guide-synchronization]: https://junit.org/junit5/docs/current/user-guide/#writing-tests-parallel-execution-synchronization
 
-To synchronize a scenario on a specific resource, the scenario must be tagged
-and this tag mapped to a lock for the specific resource. A resource is
-identified by an arbitrary string and can be either locked with a
-read-write-lock, or a read-lock.
-  
-For example, the following tags:
+    * if you want to sync a scenario | specific resource -> scenario -- must be -- tagged & tag -- mapped to a -- lock / specific resource
+      * resource -- is identified by an -- arbitrary string
+        * `@` is added by [junit5/Resources.java][resources-java]
+      * ways to lock
+        * `read-write-lock`
+        * `read-lock`
+      * _Example:_ lock the resource `java.lang.System.properties` | 2 scenarios -> NOT concurrently executed both scenarios
 
 ```gherkin
 Feature: Exclusive resources
 
-   @reads-and-writes-system-properties
+   @reads-and-writes-system-properties      // Scenario tagged
    Scenario: first example
       Given this reads and writes system properties
       When it is executed
       Then it will not be executed concurrently with the second example
 
-   @reads-system-properties
+   @reads-system-properties                 // Scenario tagged
    Scenario: second example
       Given this reads system properties
       When it is executed
       Then it will not be executed concurrently with the first example
 ```
 
-with this configuration:
-
 ```properties
 cucumber.execution.exclusive-resources.reads-and-writes-system-properties.read-write=java.lang.System.properties
 cucumber.execution.exclusive-resources.reads-system-properties.read=java.lang.System.properties
 ```
 
-when executing the first scenario tagged with
-`@reads-and-writes-system-properties` will lock the `java.lang.System.properties`
-resource with a read-write lock and will not be concurrently executed with the
-second scenario that locks the same resource with a read lock.
-
-Note: The `@` from the tag is not included in the property name.
-Note: For canonical resource names see [junit5/Resources.java][resources-java]
-
 [resources-java]: https://github.com/junit-team/junit5/blob/main/junit-jupiter-api/src/main/java/org/junit/jupiter/api/parallel/Resources.java
 
 ### Running tests in isolation
 
+* TODO:
 To ensure that a scenario runs while no other scenarios are running the global
 resource [`org.junit.platform.engine.support.hierarchical.ExclusiveResource.GLOBAL_KEY`][global-key]
 can be used.
