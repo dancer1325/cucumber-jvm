@@ -299,18 +299,17 @@ cucumber.execution.exclusive-resources.isolated.read-write=org.junit.platform.en
 ```
 ### Executing features in parallel 
 
-* TODO:
-By default, when parallel execution is enabled, scenarios and examples are
-executed in parallel. Due to limitations, JUnit 4 could only execute features in
-parallel. This behaviour can be restored by setting the configuration parameter
-`cucumber.execution.execution-mode.feature` to `same_thread`. 
+* By default, if parallel execution is enabled -> scenarios and examples -- are executed -- in parallel 
+  * JUnit 4 -- can ONLY execute -- features in parallel
+    * Reason: 🧠 limitations 🧠
+  * if you want to skip it -> `cucumber.execution.execution-mode.feature=same_thread` 
 
 ## Configuration Options ##
 
-Cucumber receives its configuration from the JUnit Platform. To see how these can be supplied; see the JUnit
-documentation
-[4.5. Configuration Parameters](https://junit.org/junit5/docs/current/user-guide/#running-tests-config-params). For 
-documentation on Cucumber properties, see [Constants](src/main/java/io/cucumber/junit/platform/engine/Constants.java).
+* -- inherit from -- JUnit Platform
+  * [ways to configure](https://junit.org/junit5/docs/current/user-guide/#running-tests-config-params)
+* Cucumber properties
+  * check next table & [Constants](src/main/java/io/cucumber/junit/platform/engine/Constants.java)
 
 ```
 cucumber.ansi-colors.disabled=                                 # true or false. 
@@ -415,6 +414,7 @@ cucumber.execution.exclusive-resources.<tag-name>.read=        # a comma separat
 
 ## Supported Discovery Selectors and Filters ## 
 
+* TODO:
 JUnit 5 [introduced a test discovery mechanism](https://junit.org/junit5/docs/current/user-guide/#launcher-api-discovery)
 as a dedicated feature of the platform itself. This allows IDEs and build tools
 to identify tests. Supported `DiscoverySelector`s are:
