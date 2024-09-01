@@ -19,11 +19,11 @@ Cucumber JUnit Platform Engine
 
 ## Surefire and Gradle workarounds
 
-* discovery of non-class based tests, NOT yet supported | Maven, Surefire and Gradle
+* 👁️ discovery of NON-class based tests, NOT yet supported | Maven Surefire and Gradle 👁️
   * gradle
     * [gradle/#4773](https://github.com/gradle/gradle/issues/4773)
   * surefire
-    * [SUREFIRE-1724](https://issues.apache.org/jira/browse/SUREFIRE-1724))
+    * [SUREFIRE-1724](https://issues.apache.org/jira/browse/SUREFIRE-1724)
   * workarounds
     * [JUnit Platform Suite Engine](https://junit.org/junit5/docs/current/user-guide/#junit-platform-suite-engine)
     * [JUnit Platform Console Launcher](https://junit.org/junit5/docs/current/user-guide/#running-tests-console-launcher)
@@ -35,13 +35,10 @@ Cucumber JUnit Platform Engine
 * JUnit Platform Suite Engine
   * allows
     * running Cucumber -- Check [Suites with different configurations](#suites-with-different-configurations) -- 
-
-* TODO:
-Because Surefire and Gradle reports provide the results in a `<Class Name> - <Method Name>`
-format, only scenario names or example numbers are reported. This
-can make for hard to read reports. To improve the readability of the reports
-provide the `cucumber.junit-platform.naming-strategy=long` configuration
-parameter. This will include the feature name as part of the test name. 
+* set `cucumber.junit-platform.naming-strategy=long` as configuration
+  parameter
+  * -> improve the readability of the reports / feature name -- is part of the -- test name  
+  * Reason: 🧠 Surefire and Gradle reports syntax `<Class Name> - <Method Name>`-> hard to read 🧠  
 
 #### Maven
 
@@ -71,12 +68,11 @@ tasks.test {
 
 ### Use the JUnit Console Launcher ###
 
-You can integrate the JUnit Platform Console Launcher in your build by using 
-either the Maven Antrun plugin or the Gradle JavaExec task.
+* integrate the JUnit Platform Console Launcher | your build
 
 #### Use the Maven Antrun plugin  ####
 
-Add the following to your `pom.xml`:
+* | your `pom.xml`
 
 ```xml
 <dependencies>
@@ -126,7 +122,7 @@ Add the following to your `pom.xml`:
 ```
 #### Use the Gradle JavaExec task  ####
 
-Add the following to your `build.gradle.kts`:
+* | your `build.gradle.kts`
 
 ```kotlin
 tasks {
@@ -151,16 +147,18 @@ tasks {
 
 ### Running a single scenario or feature from the CLI
 
-To select a single scenario or feature the `cucumber.features` property can be
-used. Because this property will cause Cucumber to ignore any other selectors
-from JUnit, it is prudent to execute only the Cucumber engine.
+* `cucumber.features` property
+  * Cucumber ignore any other selectors -- from -- JUnit
+  * recommendation
+    * 👁️execute ONLY the Cucumber engine 👁️
 
 #### Maven
 
-To select the scenario on line 10 of the `example.feature` file use:
+* _Example:_ select `example.feature` | line 10
 
 ```shell
 mvn test -Dsurefire.includeJUnit5Engines=cucumber -Dcucumber.plugin=pretty -Dcucumber.features=path/to/example.feature:10 
+// -Dsurefire.includeJUnit5Engines=cucumber   == ONLY cucumber engine
 ```
 
 #### Gradle
