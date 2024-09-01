@@ -266,12 +266,13 @@ cucumber.execution.exclusive-resources.reads-system-properties.read=java.lang.Sy
 
 ### Running tests in isolation
 
-* TODO:
-To ensure that a scenario runs while no other scenarios are running the global
-resource [`org.junit.platform.engine.support.hierarchical.ExclusiveResource.GLOBAL_KEY`][global-key]
-can be used.
+* 👁 scenario -- runs while -- NO other scenarios are running 👁️ 
+* requirements
+  * [`org.junit.platform.engine.support.hierarchical.ExclusiveResource.GLOBAL_KEY`][global-key]
 
 [global-key]: https://github.com/junit-team/junit5/blob/main/junit-platform-engine/src/main/java/org/junit/platform/engine/support/hierarchical/ExclusiveResource.java#L47
+
+* _Example:_
 
 ```gherkin
 Feature: Isolated scenarios
@@ -293,13 +294,12 @@ Feature: Isolated scenarios
       And it will be executed concurrently with the second example
 ```
 
-with this configuration:
-
 ```properties
 cucumber.execution.exclusive-resources.isolated.read-write=org.junit.platform.engine.support.hierarchical.ExclusiveResource.GLOBAL_KEY
 ```
 ### Executing features in parallel 
 
+* TODO:
 By default, when parallel execution is enabled, scenarios and examples are
 executed in parallel. Due to limitations, JUnit 4 could only execute features in
 parallel. This behaviour can be restored by setting the configuration parameter
