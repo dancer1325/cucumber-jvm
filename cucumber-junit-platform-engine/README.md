@@ -447,8 +447,8 @@ selecting a `Rule` will execute all scenarios contained within the Rule.
 
 ## Tags ##
 
-Cucumber tags are mapped to JUnit tags. Note that the `@` symbol is not part of
-the JUnit tag. So the scenarios below are tagged with `Smoke` and `Sanity`. 
+* Cucumber tags -- are mapped to -- JUnit tags
+  * `@` NOT part of the JUnit tag 
 
 ```gherkin
 @Smoke
@@ -465,24 +465,26 @@ Scenario: Another tagged scenario
   Then my tagged scenario is executed
 ```
 
-When using Maven, tags can be provided from the CLI using the `groups` and `excludedGroups` parameters. These take a
-[JUnit5 Tag Expression](https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions). The example
-below will execute `Another tagged scenario`.
+* if you use Maven -> tags can be provided from the CLI -- via -- the parameters
+  * `groups`
+  * `excludedGroups`
+  * _Example:_
 
-```
-mvn verify -DexcludedGroups="Ignore" -Dgroups="Smoke | Sanity"
-```
+    ```
+    mvn verify -DexcludedGroups="Ignore" -Dgroups="Smoke | Sanity"
+    ```
 
-For more information on how to select tags, see the relevant documentation:
-* [JUnit 5 Suite: @Include Tags](https://junit.org/junit5/docs/current/api/org.junit.platform.suite.api/org/junit/platform/suite/api/IncludeTags.html)
-* [JUnit 5 Suite: @Exclude Tags](https://junit.org/junit5/docs/current/api/org.junit.platform.suite.api/org/junit/platform/suite/api/ExcludeTags.html)
-* [JUnit 5 Console Launcher: Options](https://junit.org/junit5/docs/current/user-guide/#running-tests-console-launcher-options)
-* [JUnit 5 Tag Expression](https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions)
-* [Maven: Filtering by Tags](https://maven.apache.org/surefire/maven-surefire-plugin/examples/junit-platform.html)
-* [Gradle: Test Grouping](https://docs.gradle.org/current/userguide/java_testing.html#test_grouping)
+* check
+  * [JUnit 5 Suite: @Include Tags](https://junit.org/junit5/docs/current/api/org.junit.platform.suite.api/org/junit/platform/suite/api/IncludeTags.html)
+  * [JUnit 5 Suite: @Exclude Tags](https://junit.org/junit5/docs/current/api/org.junit.platform.suite.api/org/junit/platform/suite/api/ExcludeTags.html)
+  * [JUnit 5 Console Launcher: Options](https://junit.org/junit5/docs/current/user-guide/#running-tests-console-launcher-options)
+  * [JUnit 5 Tag Expression](https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions)
+  * [Maven: Filtering by Tags](https://maven.apache.org/surefire/maven-surefire-plugin/examples/junit-platform.html)
+  * [Gradle: Test Grouping](https://docs.gradle.org/current/userguide/java_testing.html#test_grouping)
 
 ### @Disabled
 
+* TODO:
 It is possible to recreate JUnit Jupiter's `@Disabled` functionality by
 setting the `cucumber.filter.tags=not @Disabled` property<sup>1</sup>. Any scenarios 
 tagged with `@Disabled` will be skipped. See [Configuration Options](#configuration-options)
