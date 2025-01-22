@@ -1,157 +1,148 @@
 # DataTable
 
-DataTable is a simple data structure that allows the use and transformation
-of Gherkin data tables in Cucumber.
+* goal
+  * way datatables -- can be -- converted 
 
-This is intended to support:
-* manual conversion in step definitions
-* automatic conversion by Cucumber
+* DataTable
+  * == simple data structure
+  * allows
+    * using and transforming Gherkin data tables | Cucumber
+  * goal
+    * manual conversion | step definitions
+    * automatic conversion -- by -- Cucumber
 
-This README explains the way datatables can be converted. To register converters
-see [cucumber-java/README.md](../cucumber-java)
+* how to register converters -> see [cucumber-java/README.md](../cucumber-java)
 
 ## Introduction
 
-The introduction will describe how data tables are mapped to certain data
-structures. This conversion can be done either by Cucumber or manually.
+* goal
+  * how data tables -- are mapped to -- certain data structures
 
-Let's write a simple data table and see how we might use it.
+* conversion -- can be done by --
+  * Cucumber or
+  * manually
 
-```gherkin
-| firstName   | lastName | birthDate  |
-| Annie M. G. | Schmidt  | 1911-03-20 |
-| Roald       | Dahl     | 1916-09-13 |
-| Astrid      | Lindgren | 1907-11-14 |
-```
+* _Example:_ let's have a simple data table
 
-As this is a table the natural representation would be a list of a
-list of strings.
+    ```gherkin
+    | firstName   | lastName | birthDate  |
+    | Annie M. G. | Schmidt  | 1911-03-20 |
+    | Roald       | Dahl     | 1916-09-13 |
+    | Astrid      | Lindgren | 1907-11-14 |
+    ```
 
-`java type: List<List<String>>`
+  * natural representation -- would be a -- `java type: List<List<String>>`
+    * Next one: ❌NOT useful ❌
+      * Reason: 🧠NO labeled 🧠
 
-```json
-[ 
-  [ "firstName", "lastName", "birthDate" ],
-  [ "Annie M.G", "Schmidt", "1911-03-20" ], 
-  [ "Roald", "Dahl", "1916-09-13" ], 
-  [ "Astrid", "Lindgren", "1907-11-14" ] 
-]
-```  
+        ```json
+        [ 
+          [ "firstName", "lastName", "birthDate" ],
+          [ "Annie M.G", "Schmidt", "1911-03-20" ], 
+          [ "Roald", "Dahl", "1916-09-13" ], 
+          [ "Astrid", "Lindgren", "1907-11-14" ] 
+        ]
+        ```  
 
-This representation is not very useful. The fields are no longer labeled, and
-the first row has to be discarded. So instead, we can convert this table
-into a list of maps.
+  * -- convert to -- `java type: List<Map<String, String>>`
 
-`java type: List<Map<String, String>>`
+    ```json
+    [
+      { "firstName": "Annie M.G", "lastName": "Schmidt",  "birthDate": "1911-03-20" }, 
+      { "firstName": "Roald",     "lastName": "Dahl",     "birthDate": "1916-09-13" }, 
+      { "firstName": "Astrid",    "lastName": "Lindgren", "birthDate": "1907-11-14" } 
+    ]
+    ```  
 
-```json
-[
-  { "firstName": "Annie M.G", "lastName": "Schmidt",  "birthDate": "1911-03-20" }, 
-  { "firstName": "Roald",     "lastName": "Dahl",     "birthDate": "1916-09-13" }, 
-  { "firstName": "Astrid",    "lastName": "Lindgren", "birthDate": "1907-11-14" } 
-]
-```  
+  * table's keys | first column -- via -- `java type: Map<String, String>`
 
-Sometimes a table's keys are in the first column:
+    ```gherkin
+    | KMSY | Louis Armstrong New Orleans International Airport |
+    | KSFO | San Francisco International Airport               |
+    | KSEA | Seattle–Tacoma International Airport              |
+    | KJFK | John F. Kennedy International Airport             |
+    ```
 
-```gherkin
-| KMSY | Louis Armstrong New Orleans International Airport |
-| KSFO | San Francisco International Airport               |
-| KSEA | Seattle–Tacoma International Airport              |
-| KJFK | John F. Kennedy International Airport             |
-```
+    ```json
+    {
+      "KMSY": "Louis Armstrong New Orleans International Airport",
+      "KSFO": "San Francisco International Airport",
+      "KSEA": "Seattle–Tacoma International Airport",
+      "KJFK": "John F. Kennedy International Airport"
+    }
+    ```
 
-We can convert the table into a single map.
+* _Example:_ table / have MULTIPLE column values / key
+  * table of airport codes + their coordinates expressed | latitude and longitude
 
-`java type: Map<String, String>`
-```json
-{
-  "KMSY": "Louis Armstrong New Orleans International Airport",
-  "KSFO": "San Francisco International Airport",
-  "KSEA": "Seattle–Tacoma International Airport",
-  "KJFK": "John F. Kennedy International Airport"
-}
-```
+    ```gherkin
+    | KMSY | 29.993333 |  -90.258056 |
+    | KSFO | 37.618889 | -122.375000 |
+    | KSEA | 47.448889 | -122.309444 |
+    | KJFK | 40.639722 |  -73.778889 |
+    ```
 
-In the previous example, the table only had a single column value for each key. A
-table might have multiple column values per key.
+    * -- via mapping to -- `java type: Map<String, List<String>>`
 
-For example, a table of airport codes and their coordinates expressed in
-latitude and longitude.
 
-```gherkin
-| KMSY | 29.993333 |  -90.258056 |
-| KSFO | 37.618889 | -122.375000 |
-| KSEA | 47.448889 | -122.309444 |
-| KJFK | 40.639722 |  -73.778889 |
-```
+        ```json
+        {
+          "KMSY": ["29.993333", "-90.258056"],
+          "KSFO": ["37.618889", "-122.375000"],
+          "KSEA": ["47.448889", "-122.309444"],
+          "KJFK": ["40.639722", "-73.778889"]
+        }
+        ```
 
-These can be represented by a map that uses a list as its value.
+  * adding a table's header / FIRST cell left blank
 
-`java type: Map<String, List<String>>`
-```json
-{
-  "KMSY": ["29.993333", "-90.258056"],
-  "KSFO": ["37.618889", "-122.375000"],
-  "KSEA": ["47.448889", "-122.309444"],
-  "KJFK": ["40.639722", "-73.778889"]
-}
-```
+    ```gherkin
+    |      |       lat |         lon |  
+    | KMSY | 29.993333 |  -90.258056 |
+    | KSFO | 37.618889 | -122.375000 |
+    | KSEA | 47.448889 | -122.309444 |
+    | KJFK | 40.639722 |  -73.778889 |
+    ```
+    * -- via mapping to -- `java type: Map<String, Map<String, String>>`
 
-Storing latitude and longitude as a list might lead to confusion if the columns
-are swapped. This can be avoided by adding a header to the table:
-
-```gherkin
-|      |       lat |         lon |
-| KMSY | 29.993333 |  -90.258056 |
-| KSFO | 37.618889 | -122.375000 |
-| KSEA | 47.448889 | -122.309444 |
-| KJFK | 40.639722 |  -73.778889 |
-```
-
-Note that the first cell has been left blank. This tells the table that the
-map's keys should be created from the first column rather than the header.
-
-`java type: Map<String, Map<String, String>>`
-
-```json
-{
-  "KMSY": { "lat": "29.993333", "lon": "-90.258056" },
-  "KSFO": { "lat": "37.618889", "lon": "-122.375000" },
-  "KSEA": { "lat": "47.448889", "lon": "-122.309444" },
-  "KJFK": { "lat": "40.639722", "lon": "-73.778889" }
-}
-```
+        ```json
+        {
+          "KMSY": { "lat": "29.993333", "lon": "-90.258056" },
+          "KSFO": { "lat": "37.618889", "lon": "-122.375000" },
+          "KSEA": { "lat": "47.448889", "lon": "-122.309444" },
+          "KJFK": { "lat": "40.639722", "lon": "-73.778889" }
+        }
+        ```
 
 ## Table Types
 
-So far, we have transformed a table to various collections of strings. As a
-string representation for a number is not very useful, a data table can
-transform individual cells to a different type.
+* data table's individual cells -- can be transformed to -- 
+  * Integers
+  * Floats
+  * Strings
+  * & | JVM, ALSO
+    * `BigInteger`,
+    * `BigDecimal`,
+    * `Byte`,
+    * `Short`,
+    * `Long`
+    * `Double`
+    * `Optional<T>`
 
-`java type: Map<String, Map<String, Double>>`
+* _Example:_ -- to -- `java type: Map<String, Map<String, Double>>`
 
-```json
-{
-  "KMSY": { "lat": 29.993333, "lon": -90.258056 },
-  "KSFO": { "lat": 37.618889, "lon": -122.375 },
-  "KSEA": { "lat": 47.448889, "lon": -122.309444 },
-  "KJFK": { "lat": 40.639722, "lon": -73.778889 }
-}
-```
-
-The built-in transformations support:
-
-* Integers, for example `71` or `-19`
-* Floats, for example `3.6`, `.8` or `-9.2`
-* Strings, for example `bangers` or `mash`.
-
-On the JVM, there is additional support for `BigInteger`, `BigDecimal`,
-`Byte`, `Short`, `Long` and `Double`. There is also support for `Optional<T>`
-where `T` is any type for which a table cell transformer has been registered.
+  ```json
+  {
+    "KMSY": { "lat": 29.993333, "lon": -90.258056 },
+    "KSFO": { "lat": 37.618889, "lon": -122.375 },
+    "KSEA": { "lat": 47.448889, "lon": -122.309444 },
+    "KJFK": { "lat": 40.639722, "lon": -73.778889 }
+  }
+  ```
 
 ### Custom Table Types
 
+* TODO:
 You can define custom data table types to represent tables from your own
 domain. Doing this has the following benefits:
 
@@ -377,42 +368,49 @@ assertThat(actualTable, hasTheSameRowsAs(expectedTable));
 
 ## DataTable object
 
-An m-by-n immutable table of string values. A table is either empty or contains
-one or more cells. As such, if a table has zero height, it must have zero width and
-vice versa.
+* == table
+  * m x n immutable -- of -- string values
+  * == >=0 cells
+    * if a table has 0 height or 0 width -> has 0 width or 0 height 
+  * table header
+    * == first row of the table
+  * table body
+    * == ALL table's elements / != table header
 
-The first row of the table may be referred to as the table header. The
-remaining cells as the table body.
-
-A table provides the following operations:
-
-* `diff` throws an exception if the two tables are different.
-* `unorderedDiff` throws an exception if the two tables are different, allowing a difference in ordering.
-* `isEmpty` returns true if the table has no cells.
-* `transpose` returns a transposed table
-* `height` returns the height of the table
-* `width` returns the width of the table
-* `cells` returns the cells of the table as a list of lists of strings
-* `row(index)` returns a single row
-* `rows(fromRow, toRow)`` returns table containing the rows between `fromRow`
-  (inclusive) to `toRow` (exclusive).
-* `column(index)` returns a single column
-* `columns(fromColumn, toColumn)`` returns table containing the columns
-  between `fromColumn` (inclusive) to `toColumn` (exclusive).
-* `subTable(fromRow, fromColumn, toRow, toColumn)` returns a tablw containing the
-  cells between `fromRow` and `fromColumn` (inclusive) to `toRow` and `toColumn` (exclusive).
-
-Additionally, it provides methods to conveniently convert the table into
-other data structures using the transformers from the previous section.
-
-* `asList|Lists(type)` converts a table to a list or lists of a given type.
-* `asMap|Maps(keyType, valueType)` converts a table to map of key to value types.
-* `convert(type)` converts a table to an object of an arbitrary type.
+* built-in methods
+  * `diff`
+    * if 2 tables are DIFFERENT -> throws an exception 
+  * `unorderedDiff`
+    * if the 2 tables are different / ordering NOT taken in account -> throws an exception 
+  * `isEmpty`
+    * if the table has no cells -> returns true 
+  * `transpose`
+    * returns a transposed table
+  * `height`
+    * returns the table's height
+  * `width`
+    * returns the table's width
+  * `cells`
+    * returns the table's cells -- as a -- List<List<string>>
+  * `row(index)`
+    * returns 1! row
+  * `rows(fromRow, toRow)`` returns table containing the rows between `fromRow`
+    (inclusive) to `toRow` (exclusive).
+  * `column(index)`
+    * returns 1! column
+  * `columns(fromColumn, toColumn)`` returns table containing the columns
+    between `fromColumn` (inclusive) to `toColumn` (exclusive).
+  * `subTable(fromRow, fromColumn, toRow, toColumn)` returns a tablw containing the
+    cells between `fromRow` and `fromColumn` (inclusive) to `toRow` and `toColumn` (exclusive)
+  * transformers / table -- is converted into -- OTHER data structures
+    * `asList|Lists(type)`
+      * table -- is converted to a -- List<someType> or List<List<someType>> 
+    * `asMap|Maps(keyType, valueType)`
+      * table -- is converted to a -- map<someType>
+    * `convert(type)`
+      * table -- is converted to a --  object<someType>
 
 ## For contributors
-
-If you're contributing to Cucumber, you might be interested in how to use
-DataTable programmatically. Here are some pointers:
 
 ### Transformation in detail.
 
